@@ -67,6 +67,31 @@ npm start
 - `pages/index.tsx`：ホームページ。
 - `utils/geminiApi.ts`：Google Generative AI APIとの通信を行うユーティリティ。
 
+## 処理の流れ
+
+以下は、Mermaid Editor GenAIの主な処理の流れを示すフローチャートです。
+
+```mermaid
+graph TD
+    A[開始] --> B[初期Mermaidコードの表示]
+    B --> C{ユーザーアクション}
+    C -->|コード編集| D[コードエディタで編集]
+    C -->|Undo/Redo| E[履歴管理]
+    C -->|クリア| F[エディタ内容をクリア]
+    C -->|コピー| G[クリップボードにコピー]
+    C -->|Gemini指示入力| H[Gemini APIにリクエスト]
+    H --> I[ローディング表示]
+    I --> J{APIレスポンス}
+    J -->|成功| K[Mermaidコード更新]
+    J -->|エラー| L[エラーダイアログ表示]
+    K --> M[プレビュー更新]
+    D --> M
+    E --> M
+    F --> M
+    L --> C
+    M --> C
+```
+
 ## ライセンス
 
 このプロジェクトはMITライセンスのもとで公開されています。詳細は`LICENSE`ファイルを参照してください。
