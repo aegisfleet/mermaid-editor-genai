@@ -1,21 +1,23 @@
 import React, { useRef, useState } from 'react';
 
 export type DiagramType = 'sequence' | 'class' | 'flowchart';
+export type UpdateType = 'new' | 'update';
 
 interface FileUploadProps {
-  onFilesSelected: (files: File[], diagramType: DiagramType) => void;
+  onFilesSelected: (files: File[], diagramType: DiagramType, updateType: UpdateType) => void;
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
   const [diagramType, setDiagramType] = useState<DiagramType>('sequence');
+  const [updateType, setUpdateType] = useState<UpdateType>('new');
 
   const MAX_FILE_SIZE = 20 * 1024;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    onFilesSelected(files, diagramType);
+    onFilesSelected(files, diagramType, updateType);
   };
 
   const handleFolderChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +37,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
       }
     }
 
-    onFilesSelected(files, diagramType);
+    onFilesSelected(files, diagramType, updateType);
   };
 
   const handleFileButtonClick = () => {
@@ -49,14 +51,24 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
   return (
     <div className="mb-4 flex items-center flex-wrap">
       <select
-        value={diagramType}
-        onChange={(e) => setDiagramType(e.target.value as DiagramType)}
+        value={updateType}
+        onChange={(e) => setUpdateType(e.target.value as UpdateType)}
         className="mr-2 px-4 py-2 border rounded-lg shadow-sm"
       >
-        <option value="sequence">シーケンス図</option>
-        <option value="class">クラス図</option>
-        <option value="flowchart">フローチャート</option>
+        <option value="new">新規作成</option>
+        <option value="update">現在の図を更新</option>
       </select>
+      {updateType === 'new' && (
+        <select
+          value={diagramType}
+          onChange={(e) => setDiagramType(e.target.value as DiagramType)}
+          className="mr-2 px-4 py-2 border rounded-lg shadow-sm"
+        >
+          <option value="sequence">シーケンス図</option>
+          <option value="class">クラス図</option>
+          <option value="flowchart">フローチャート</option>
+        </select>
+      )}
       <input
         type="file"
         ref={fileInputRef}

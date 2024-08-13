@@ -3,10 +3,10 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import CodeEditor from '../components/CodeEditor';
 import ErrorDialog from '../components/ErrorDialog';
-import FileUpload, { DiagramType } from '../components/FileUpload';
+import FileUpload, { DiagramType, UpdateType } from '../components/FileUpload';
 import GeminiInput from '../components/GeminiInput';
 import LoadingDialog from '../components/LoadingDialog';
-import { generateDiagram, updateMermaidWithGemini } from '../utils/geminiApi';
+import { generateDiagram, updateDiagramWithFiles, updateMermaidWithGemini } from '../utils/geminiApi';
 
 const MermaidPreview = dynamic(() => import('../components/MermaidPreview'), { ssr: false });
 
@@ -84,28 +84,29 @@ const Home = () => {
     }
   };
 
-  const handleFilesSelected = async (files: File[], diagramType: DiagramType) => {
+  const handleFilesSelected = async (files: File[], diagramType: DiagramType, updateType: UpdateType) => {
     setIsLoading(true);
     setError(null);
     try {
       const fileContents = await Promise.all(
         files.map(file => file.text())
       );
-      const fileInfos = files.map(file => ({
+      const fileInfos = files.map((file, index) => ({
         name: file.name,
         path: file.webkitRelativePath || file.name,
-        content: null as string | null
+        content: fileContents[index]
       }));
-
-      for (let i = 0; i < fileContents.length; i++) {
-        fileInfos[i].content = fileContents[i];
+  
+      let newCode: string;
+      if (updateType === 'new') {
+        newCode = await generateDiagram(fileInfos, diagramType);
+      } else {
+        newCode = await updateDiagramWithFiles(mermaidCode, fileInfos);
       }
-
-      const diagram = await generateDiagram(fileInfos, diagramType);
-      updateCode(diagram);
+      updateCode(newCode);
     } catch (error) {
-      console.error('Error generating diagram:', error);
-      setError(`Failed to generate ${diagramType} diagram. Please try again.`);
+      console.error('Error generating/updating diagram:', error);
+      setError(`Failed to ${updateType === 'new' ? 'generate' : 'update'} diagram. Please try again.`);
     } finally {
       setIsLoading(false);
     }

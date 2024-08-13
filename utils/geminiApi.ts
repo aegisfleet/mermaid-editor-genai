@@ -88,3 +88,39 @@ ${fileInfos.filter(file => file.content).map(file => `\`\`\`file:${file.path}\n$
     throw error;
   }
 };
+
+export const updateDiagramWithFiles = async (currentCode: string, fileInfos: FileInfo[]) => {
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+
+  const fileStructure = fileInfos.map(file => `${file.path}: ${file.content ? '(content available)' : '(no content)'}`).join('\n');
+
+  const prompt = `
+以下のファイル構造とコンテンツを解析し、現在のMermaidコードを更新してください。
+
+仕様:
+- 現在のMermaidコードを基に、新しい情報を統合して図を更新する。
+- 更新されたMermaidコードのみを返す。
+
+現在のMermaidコード:
+${currentCode}
+
+ファイル構造:
+${fileStructure}
+
+ファイルコンテンツ:
+${fileInfos.filter(file => file.content).map(file => `\`\`\`file:${file.path}\n${file.content}\n\`\`\``).join('\n\n')}
+  `;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    let updatedDiagram = response.text();
+
+    updatedDiagram = updatedDiagram.replace(/```mermaid/g, '').replace(/```/g, '').trim();
+
+    return updatedDiagram;
+  } catch (error) {
+    console.error(`Error updating diagram with Gemini:`, error);
+    throw error;
+  }
+};
