@@ -3,9 +3,10 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import CodeEditor from '../components/CodeEditor';
 import ErrorDialog from '../components/ErrorDialog';
+import FileUpload, { DiagramType } from '../components/FileUpload';
 import GeminiInput from '../components/GeminiInput';
 import LoadingDialog from '../components/LoadingDialog';
-import { updateMermaidWithGemini } from '../utils/geminiApi';
+import { generateDiagram, updateMermaidWithGemini } from '../utils/geminiApi';
 
 const MermaidPreview = dynamic(() => import('../components/MermaidPreview'), { ssr: false });
 
@@ -25,8 +26,10 @@ const Home = () => {
     C -->|クリア| F[エディタ内容をクリア]
     C -->|コピー| G[クリップボードにコピー]
     C -->|Gemini指示入力| H[Gemini APIにリクエスト]
+    C -->|ファイルアップロード| N[Gemini APIにリクエスト]
     H --> I[ローディング表示]
     I --> J{APIレスポンス}
+    N --> I
     J -->|成功| K[Mermaidコード更新]
     J -->|エラー| L[エラーダイアログ表示]
     K --> M[プレビュー更新]
@@ -81,6 +84,33 @@ const Home = () => {
     }
   };
 
+  const handleFilesSelected = async (files: File[], diagramType: DiagramType) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const fileContents = await Promise.all(
+        files.map(file => file.text())
+      );
+      const fileInfos = files.map(file => ({
+        name: file.name,
+        path: file.webkitRelativePath || file.name,
+        content: null as string | null
+      }));
+
+      for (let i = 0; i < fileContents.length; i++) {
+        fileInfos[i].content = fileContents[i];
+      }
+
+      const diagram = await generateDiagram(fileInfos, diagramType);
+      updateCode(diagram);
+    } catch (error) {
+      console.error('Error generating diagram:', error);
+      setError(`Failed to generate ${diagramType} diagram. Please try again.`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       <Head>
@@ -91,16 +121,19 @@ const Home = () => {
         <h1 className="text-2xl font-bold">Mermaid Editor GenAI</h1>
       </header>
       <main className="flex flex-1 overflow-hidden">
-        <div className="w-1/2 p-4 bg-white shadow-lg flex flex-col">
-          <CodeEditor
-            code={mermaidCode}
-            onChange={updateCode}
-            onUndo={handleUndo}
-            onRedo={handleRedo}
-            onClear={handleClear}
-          />
+        <div className="w-1/2 p-4 bg-white shadow-lg flex flex-col overflow-hidden">
+          <FileUpload onFilesSelected={handleFilesSelected} />
+          <div className="flex-1 overflow-auto">
+            <CodeEditor
+              code={mermaidCode}
+              onChange={updateCode}
+              onUndo={handleUndo}
+              onRedo={handleRedo}
+              onClear={handleClear}
+            />
+          </div>
         </div>
-        <div className="w-1/2 p-4 bg-white shadow-lg flex flex-col">
+        <div className="w-1/2 p-4 bg-white shadow-lg flex flex-col overflow-hidden">
           <MermaidPreview code={mermaidCode} />
         </div>
       </main>

@@ -12,6 +12,7 @@ const MermaidPreview: React.FC<MermaidPreviewProps> = ({ code }) => {
   const [dragging, setDragging] = useState<boolean>(false);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [startPosition, setStartPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -22,11 +23,13 @@ const MermaidPreview: React.FC<MermaidPreviewProps> = ({ code }) => {
         const { svg } = await mermaid.render('mermaid-diagram', code);
         if (isMounted) {
           setSvgCode(svg);
+          setError(null);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Mermaid rendering error:', error);
         if (isMounted) {
-          setSvgCode('<p>Error rendering diagram</p>');
+          setSvgCode('');
+          setError(error.message || 'Error rendering diagram');
         }
       }
     };
@@ -106,14 +109,21 @@ const MermaidPreview: React.FC<MermaidPreviewProps> = ({ code }) => {
         onMouseLeave={handleMouseUp}
         onWheel={handleWheel}
       >
-        <div
-          dangerouslySetInnerHTML={{ __html: svgCode }}
-          style={{
-            transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
-            transformOrigin: 'top left',
-            transition: dragging ? 'none' : 'transform 0.2s',
-          }}
-        />
+        {error ? (
+          <div className="text-red-500">
+            <p>Error rendering diagram:</p>
+            <pre>{error}</pre>
+          </div>
+        ) : (
+          <div
+            dangerouslySetInnerHTML={{ __html: svgCode }}
+            style={{
+              transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
+              transformOrigin: 'top left',
+              transition: dragging ? 'none' : 'transform 0.2s',
+            }}
+          />
+        )}
       </div>
     </div>
   );

@@ -42,13 +42,12 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange, onUndo, onRedo,
           {copyStatus}
         </button>
       </div>
-      <div className="flex-grow overflow-hidden">
+      <div className="flex-grow overflow-auto">
         <CodeMirror
           value={code}
-          height="100%"
           extensions={[markdown()]}
           onChange={handleChange}
-          className="border rounded h-full overflow-auto"
+          className="border rounded h-full"
         />
       </div>
     </div>
