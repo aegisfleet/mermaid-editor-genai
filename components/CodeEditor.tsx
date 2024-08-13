@@ -7,7 +7,7 @@ interface CodeEditorProps {
   onChange: (value: string) => void;
   onUndo: () => void;
   onRedo: () => void;
-  onClear: () => void; // 追加
+  onClear: () => void;
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange, onUndo, onRedo, onClear }) => {
@@ -42,13 +42,15 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange, onUndo, onRedo,
           {copyStatus}
         </button>
       </div>
-      <CodeMirror
-        value={code}
-        height="calc(100% - 40px)"
-        extensions={[markdown()]}
-        onChange={handleChange}
-        className="border rounded flex-grow"
-      />
+      <div className="flex-grow overflow-hidden">
+        <CodeMirror
+          value={code}
+          height="100%"
+          extensions={[markdown()]}
+          onChange={handleChange}
+          className="border rounded h-full overflow-auto"
+        />
+      </div>
     </div>
   );
 };
