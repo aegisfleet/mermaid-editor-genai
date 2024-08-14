@@ -10,6 +10,11 @@ Mermaid Editor GenAIは、Mermaidダイアグラムを生成および編集す�
 - **コピー機能**：エディタの内容をクリップボードにコピーします。
 - **自動更新機能**：指示を入力するとGoogle Generative AIを使用してMermaidコードを更新します。
 - **プレビュー機能**：Mermaidコードのプレビューをリアルタイムで表示します。
+- **ズーム機能**：プレビュー画面でダイアグラムをズームインまたはズームアウトできます。
+- **パン機能**：プレビュー画面でダイアグラムをドラッグして移動できます。
+- **ファイルアップロード機能**：単一または複数のファイル、フォルダをアップロードしてダイアグラムを生成または更新します。
+- **ダイアグラム生成**：アップロードされたファイルに基づいて、新しいシーケンス図、クラス図、またはフローチャートを生成します。
+- **ダイアグラム更新**：既存のダイアグラムをアップロードされたファイルの内容に基づいて更新します。
 
 ## 使用技術
 
@@ -19,6 +24,7 @@ Mermaid Editor GenAIは、Mermaidダイアグラムを生成および編集す�
 - Tailwind CSS
 - CodeMirror
 - Google Generative AI (Gemini)
+- Mermaid.js
 
 ## 環境構築
 
@@ -30,10 +36,10 @@ npm install
 
 ### 環境変数の設定
 
-`NEXT_PUBLIC_GEMINI_API_KEY` を設定する必要があります。以下のように`.env.local`ファイルを作成して設定します。
+`GEMINI_API_KEY` を設定する必要があります。以下のように`.env.local`ファイルを作成して設定します。
 
 ```plaintext
-NEXT_PUBLIC_GEMINI_API_KEY=YOUR_API_KEY
+GEMINI_API_KEY=YOUR_API_KEY
 ```
 
 ### 開発サーバーの起動
@@ -60,12 +66,14 @@ npm start
 
 - `components/CodeEditor.tsx`：Mermaidコードを編集するためのエディタコンポーネント。
 - `components/ErrorDialog.tsx`：エラーダイアログコンポーネント。
+- `components/FileUpload.tsx`：ファイルアップロード用のコンポーネント。
 - `components/GeminiInput.tsx`：Google Generative AIに指示を送るための入力コンポーネント。
 - `components/LoadingDialog.tsx`：ローディングダイアログコンポーネント。
 - `components/MermaidPreview.tsx`：Mermaidコードのプレビューコンポーネント。
 - `pages/_app.tsx`：アプリケーションのメインエントリーポイント。
 - `pages/index.tsx`：ホームページ。
-- `utils/geminiApi.ts`：Google Generative AI APIとの通信を行うユーティリティ。
+- `pages/api/gemini.ts`：Google Generative AI APIとの通信を行うAPIルート。
+- `utils/geminiApi.ts`：フロントエンドからGemini APIを呼び出すためのユーティリティ関数。
 
 ## 処理の流れ
 
