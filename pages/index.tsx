@@ -88,7 +88,7 @@ const Home = () => {
     }
   };
 
-  const handleFilesSelected = async (files: File[], diagramType: DiagramType, updateType: UpdateType) => {
+  const handleFilesSelected = async (files: File[], diagramType: DiagramType, updateType: UpdateType, userInstruction: string) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -103,9 +103,9 @@ const Home = () => {
   
       let newCode: string;
       if (updateType === 'new') {
-        newCode = await generateDiagram(fileInfos, diagramType);
+        newCode = await generateDiagram(fileInfos, diagramType, userInstruction);
       } else {
-        newCode = await updateDiagramWithFiles(mermaidCode, fileInfos);
+        newCode = await updateDiagramWithFiles(mermaidCode, fileInfos, userInstruction);
       }
       updateCode(newCode);
     } catch (error) {

@@ -27,10 +27,10 @@ export const updateMermaidWithGemini = async (currentCode: string, instruction: 
   return callGeminiAPI('updateMermaid', { currentCode, instruction });
 };
 
-export const generateDiagram = async (fileInfos: FileInfo[], diagramType: DiagramType) => {
-  return callGeminiAPI('generateDiagram', { fileInfos, diagramType });
+export const generateDiagram = async (fileInfos: FileInfo[], diagramType: DiagramType, userInstruction: string) => {
+  return callGeminiAPI('generateDiagram', { fileInfos, diagramType, userInstruction });
 };
 
-export const updateDiagramWithFiles = async (currentCode: string, fileInfos: FileInfo[]) => {
-  return callGeminiAPI('updateDiagram', { currentCode, fileInfos });
+export const updateDiagramWithFiles = async (currentCode: string, fileInfos: FileInfo[], userInstruction: string) => {
+  return callGeminiAPI('updateDiagram', { currentCode, fileInfos, userInstruction });
 };

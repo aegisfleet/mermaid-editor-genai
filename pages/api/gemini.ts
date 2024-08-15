@@ -24,10 +24,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         result = await updateMermaidWithGemini(data.currentCode, data.instruction);
         break;
       case 'generateDiagram':
-        result = await generateDiagram(data.fileInfos, data.diagramType);
+        result = await generateDiagram(data.fileInfos, data.diagramType, data.userInstruction);
         break;
       case 'updateDiagram':
-        result = await updateDiagramWithFiles(data.currentCode, data.fileInfos);
+        result = await updateDiagramWithFiles(data.currentCode, data.fileInfos, data.userInstruction);
         break;
       default:
         return res.status(400).json({ message: 'Invalid action' });
@@ -77,7 +77,7 @@ ${currentCode}
   }
 };
 
-const generateDiagram = async (fileInfos: FileInfo[], diagramType: DiagramType) => {
+const generateDiagram = async (fileInfos: FileInfo[], diagramType: DiagramType, userInstruction: string) => {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
   const diagramTypeMap = {
@@ -88,14 +88,27 @@ const generateDiagram = async (fileInfos: FileInfo[], diagramType: DiagramType) 
 
   const fileStructure = fileInfos.map(file => `${file.path}: ${file.content ? '(content available)' : '(no content)'}`).join('\n');
 
+  let specificationPrompt;
+  if (userInstruction) {
+    specificationPrompt = `
+- ${userInstruction}の呼び出し元を解析し、ダイアグラムに反映させたい。
+- ${userInstruction}に関係の無い処理は記載しない。
+    `;
+  } else {
+    specificationPrompt = `
+- この図はコンテンツの内容を深く理解するために作成され、簡素で分かりやすい表現を用いる。
+- 関連の無いファイルの記載は省略する。
+    `;
+  }
+
   const prompt = `
 以下のファイル構造とコンテンツを解析し、${diagramTypeMap[diagramType]}を生成してください。
 
 仕様:
 - Mermaidの${diagramTypeMap[diagramType]}形式を使用する。
-- この図はコンテンツの内容を深く理解するために作成され、簡素で分かりやすい表現を用いる。
+${specificationPrompt}
 - 図の中には補足を日本語で記載する。
-- 関連の無いファイルの記載は省略する。
+- なるべくUI上の機能名を記載する。
 - 生成されたMermaidコードのみを返す。
 
 ファイル構造:
@@ -119,7 +132,7 @@ ${fileInfos.filter(file => file.content).map(file => `\`\`\`file:${file.path}\n$
   }
 };
 
-const updateDiagramWithFiles = async (currentCode: string, fileInfos: FileInfo[]) => {
+const updateDiagramWithFiles = async (currentCode: string, fileInfos: FileInfo[], userInstruction: string) => {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
   const fileStructure = fileInfos.map(file => `${file.path}: ${file.content ? '(content available)' : '(no content)'}`).join('\n');

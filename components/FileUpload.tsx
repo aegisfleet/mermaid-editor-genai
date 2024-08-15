@@ -4,7 +4,7 @@ export type DiagramType = 'sequence' | 'class' | 'flowchart';
 export type UpdateType = 'new' | 'update';
 
 interface FileUploadProps {
-  onFilesSelected: (files: File[], diagramType: DiagramType, updateType: UpdateType) => void;
+  onFilesSelected: (files: File[], diagramType: DiagramType, updateType: UpdateType, userInstruction: string) => void;
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
@@ -12,12 +12,13 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
   const folderInputRef = useRef<HTMLInputElement>(null);
   const [diagramType, setDiagramType] = useState<DiagramType>('sequence');
   const [updateType, setUpdateType] = useState<UpdateType>('new');
+  const [userInstruction, setUserInstruction] = useState<string>('');
 
   const MAX_FILE_SIZE = 20 * 1024;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    onFilesSelected(files, diagramType, updateType);
+    onFilesSelected(files, diagramType, updateType, userInstruction);
   };
 
   const handleFolderChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +38,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
       }
     }
 
-    onFilesSelected(files, diagramType, updateType);
+    onFilesSelected(files, diagramType, updateType, userInstruction);
   };
 
   const handleFileButtonClick = () => {
@@ -68,6 +69,15 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
           <option value="class">クラス図</option>
           <option value="flowchart">フローチャート</option>
         </select>
+      )}
+      {updateType === 'new' && (
+        <input
+          type="text"
+          value={userInstruction}
+          onChange={(e) => setUserInstruction(e.target.value)}
+          placeholder="(任意) 着目したい関数名や機能名を入力"
+          className="mr-2 px-4 py-2 border rounded-lg shadow-sm flex-grow"
+        />
       )}
       <input
         type="file"
