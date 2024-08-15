@@ -10,6 +10,7 @@ Mermaid Editor GenAIは、Mermaidダイアグラムを生成および編集す�
 - **コピー機能**：エディタの内容をクリップボードにコピーします。
 - **自動更新機能**：指示を入力するとGoogle Generative AIを使用してMermaidコードを更新します。
 - **プレビュー機能**：Mermaidコードのプレビューをリアルタイムで表示します。
+- **リサイズ機能**：エディタとプレビューの幅を調整できます。
 - **ズーム機能**：プレビュー画面でダイアグラムをズームインまたはズームアウトできます。
 - **パン機能**：プレビュー画面でダイアグラムをドラッグして移動できます。
 - **ファイルアップロード機能**：単一または複数のファイル、フォルダをアップロードしてダイアグラムを生成または更新します。
@@ -70,6 +71,7 @@ npm start
 - `components/GeminiInput.tsx`：Google Generative AIに指示を送るための入力コンポーネント。
 - `components/LoadingDialog.tsx`：ローディングダイアログコンポーネント。
 - `components/MermaidPreview.tsx`：Mermaidコードのプレビューコンポーネント。
+- `components/Resizer.tsx`：エディタとプレビューの幅を調整するためのコンポーネント。
 - `pages/_app.tsx`：アプリケーションのメインエントリーポイント。
 - `pages/index.tsx`：ホームページ。
 - `pages/api/gemini.ts`：Google Generative AI APIとの通信を行うAPIルート。
@@ -77,7 +79,7 @@ npm start
 
 ## 処理の流れ
 
-以下は、Mermaid Editor GenAIの主な処理の流れを示すフローチャートです。
+### Mermaid Editor GenAIの主な処理の流れを示すフローチャート
 
 ```mermaid
 graph TD
@@ -100,6 +102,32 @@ graph TD
     F --> M
     L --> C
     M --> C
+```
+
+### `updateMermaidWithGemini`に着目して作成したシーケンス図
+
+```mermaid
+sequenceDiagram
+  ユーザー->>+Mermaid Editor GenAI: Gemini指示入力
+  activate Mermaid Editor GenAI
+  Mermaid Editor GenAI->>+pages/index.tsx: handleGeminiUpdate(instruction)
+  activate pages/index.tsx
+  pages/index.tsx->>+utils/geminiApi.ts: updateMermaidWithGemini(mermaidCode, instruction)
+  activate utils/geminiApi.ts
+  utils/geminiApi.ts->>+pages/api/gemini: callGeminiAPI('updateMermaid', { currentCode, instruction })
+  activate pages/api/gemini
+  pages/api/gemini->>+Google Generative AI: model.generateContent(prompt)
+  activate Google Generative AI
+  Google Generative AI-->>-pages/api/gemini: 更新されたMermaidコード
+  deactivate Google Generative AI
+  pages/api/gemini-->>-utils/geminiApi.ts: 更新されたMermaidコード
+  deactivate pages/api/gemini
+  utils/geminiApi.ts-->>-pages/index.tsx: 更新されたMermaidコード
+  deactivate utils/geminiApi.ts
+  pages/index.tsx->>pages/index.tsx: updateCode(updatedCode)
+  pages/index.tsx-->>-Mermaid Editor GenAI: 処理終了
+  deactivate pages/index.tsx
+  deactivate Mermaid Editor GenAI
 ```
 
 ## ライセンス
