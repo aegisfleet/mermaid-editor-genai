@@ -1,10 +1,11 @@
-import React, { FormEvent, KeyboardEvent, useState } from 'react';
+import React, { FormEvent, KeyboardEvent, useEffect, useState } from 'react';
 
 interface GeminiInputProps {
   onSubmit: (instruction: string) => void;
+  clearTrigger: number;
 }
 
-const GeminiInput: React.FC<GeminiInputProps> = ({ onSubmit }) => {
+const GeminiInput: React.FC<GeminiInputProps> = ({ onSubmit, clearTrigger }) => {
   const [instruction, setInstruction] = useState('');
 
   const sampleInstructions = [
@@ -14,11 +15,14 @@ const GeminiInput: React.FC<GeminiInputProps> = ({ onSubmit }) => {
     "表示される文字を英語にして欲しい。",
   ];
 
+  useEffect(() => {
+    setInstruction('');
+  }, [clearTrigger]);
+
   const handleSubmit = (e?: FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
     if (instruction.trim()) {
       onSubmit(instruction.trim());
-      setInstruction('');
     }
   };
 

@@ -18,6 +18,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [leftWidth, setLeftWidth] = useState<number>(50);
+  const [clearTrigger, setClearTrigger] = useState<number>(0);
 
   useEffect(() => {
     const initialCode = `graph TD
@@ -78,6 +79,7 @@ const Home = () => {
     try {
       const updatedCode = await updateMermaidWithGemini(mermaidCode, instruction);
       updateCode(updatedCode);
+      setClearTrigger(prev => prev + 1);
     } catch (error) {
       console.error('Error updating code with Gemini:', error);
       setError('Failed to update code with Gemini. Please try again.');
@@ -150,7 +152,7 @@ const Home = () => {
         </div>
       </main>
       <footer className="bg-gray-200 p-4">
-        <GeminiInput onSubmit={handleGeminiUpdate} />
+        <GeminiInput onSubmit={handleGeminiUpdate} clearTrigger={clearTrigger} />
       </footer>
       <LoadingDialog isOpen={isLoading} />
       <ErrorDialog isOpen={error !== null} message={error || ''} onClose={() => setError(null)} />
