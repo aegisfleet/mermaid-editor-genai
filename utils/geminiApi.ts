@@ -1,12 +1,13 @@
 import { DiagramType } from "../components/FileUpload";
+import { FileInfo } from "../types/types";
 
-interface FileInfo {
-  name: string;
-  path: string;
-  content: string | null;
+interface GeminiApiResponse {
+  result: string;
 }
 
-async function callGeminiAPI(action: string, data: any) {
+type GeminiAction = 'updateMermaid' | 'generateDiagram' | 'updateDiagram';
+
+async function callGeminiAPI<T>(action: GeminiAction, data: T): Promise<string> {
   const response = await fetch('/api/gemini', {
     method: 'POST',
     headers: {
@@ -16,21 +17,21 @@ async function callGeminiAPI(action: string, data: any) {
   });
 
   if (!response.ok) {
-    throw new Error('API request failed');
+    throw new Error(`API request failed: ${response.statusText}`);
   }
 
-  const result = await response.json();
+  const result: GeminiApiResponse = await response.json();
   return result.result;
 }
 
-export const updateMermaidWithGemini = async (currentCode: string, instruction: string) => {
+export const updateMermaidWithGemini = async (currentCode: string, instruction: string): Promise<string> => {
   return callGeminiAPI('updateMermaid', { currentCode, instruction });
 };
 
-export const generateDiagram = async (fileInfos: FileInfo[], diagramType: DiagramType, userInstruction: string) => {
+export const generateDiagram = async (fileInfos: FileInfo[], diagramType: DiagramType, userInstruction: string): Promise<string> => {
   return callGeminiAPI('generateDiagram', { fileInfos, diagramType, userInstruction });
 };
 
-export const updateDiagramWithFiles = async (currentCode: string, fileInfos: FileInfo[], userInstruction: string) => {
+export const updateDiagramWithFiles = async (currentCode: string, fileInfos: FileInfo[], userInstruction: string): Promise<string> => {
   return callGeminiAPI('updateDiagram', { currentCode, fileInfos, userInstruction });
 };
