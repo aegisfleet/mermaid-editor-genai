@@ -12,6 +12,7 @@
     "@codemirror/lang-markdown": "^6.2.5",
     "@google/generative-ai": "^0.16.0",
     "@uiw/react-codemirror": "^4.23.0",
+    "lucide-react": "^0.316.0",
     "mermaid": "^10.9.1",
     "next": "14.2.5",
     "react": "^18",

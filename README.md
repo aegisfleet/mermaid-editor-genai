@@ -16,6 +16,7 @@ Mermaid Editor GenAIは、Mermaidダイアグラムを生成および編集す�
 - **ファイルアップロード機能**：単一または複数のファイル、フォルダをアップロードしてダイアグラムを生成または更新します。
 - **ダイアグラム生成**：アップロードされたファイルに基づいて、新しいシーケンス図、クラス図、またはフローチャートを生成します。
 - **ダイアグラム更新**：既存のダイアグラムをアップロードされたファイルの内容に基づいて更新します。
+- **ダークモード**: ライトモードとダークモードを切り替えることができます。
 
 ## 使用技術
 
@@ -26,6 +27,7 @@ Mermaid Editor GenAIは、Mermaidダイアグラムを生成および編集す�
 - CodeMirror
 - Google Generative AI (Gemini)
 - Mermaid.js
+- Lucide React (アイコン用)
 
 ## 環境構築
 
@@ -72,6 +74,7 @@ npm start
 - `components/LoadingDialog.tsx`：ローディングダイアログコンポーネント。
 - `components/MermaidPreview.tsx`：Mermaidコードのプレビューコンポーネント。
 - `components/Resizer.tsx`：エディタとプレビューの幅を調整するためのコンポーネント。
+- `components/ThemeToggle.tsx`: ライトモードとダークモードを切り替えるためのコンポーネント。
 - `pages/_app.tsx`：アプリケーションのメインエントリーポイント。
 - `pages/index.tsx`：ホームページ。
 - `pages/api/gemini.ts`：Google Generative AI APIとの通信を行うAPIルート。

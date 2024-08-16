@@ -54,7 +54,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
       <select
         value={updateType}
         onChange={(e) => setUpdateType(e.target.value as UpdateType)}
-        className="mr-2 px-4 py-2 border rounded-lg shadow-sm"
+        className="mr-2 px-4 py-2 rounded-lg shadow-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
       >
         <option value="new">新規作成</option>
         <option value="update">現在の図を更新</option>
@@ -63,7 +63,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
         <select
           value={diagramType}
           onChange={(e) => setDiagramType(e.target.value as DiagramType)}
-          className="mr-2 px-4 py-2 border rounded-lg shadow-sm"
+          className="mr-2 px-4 py-2 rounded-lg shadow-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
         >
           <option value="sequence">シーケンス図</option>
           <option value="class">クラス図</option>
@@ -76,7 +76,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
           value={userInstruction}
           onChange={(e) => setUserInstruction(e.target.value)}
           placeholder="(任意) 着目したい関数名や機能名を入力"
-          className="mr-2 px-4 py-2 border rounded-lg shadow-sm flex-grow"
+          className="mr-2 px-4 py-2 rounded-lg shadow-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 flex-grow"
         />
       )}
       <input
@@ -95,13 +95,13 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
       />
       <button
         onClick={handleFileButtonClick}
-        className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition-colors mr-2"
+        className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition-colors mr-2 dark:bg-green-600 dark:hover:bg-green-700"
       >
         Upload Files
       </button>
       <button
         onClick={handleFolderButtonClick}
-        className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors"
+        className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors dark:bg-blue-600 dark:hover:bg-blue-700"
       >
         Upload Folder
       </button>
