@@ -1,12 +1,13 @@
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import CodeEditor from '../components/CodeEditor';
 import ErrorDialog from '../components/ErrorDialog';
 import FileUpload, { DiagramType, UpdateType } from '../components/FileUpload';
 import GeminiInput from '../components/GeminiInput';
 import LoadingDialog from '../components/LoadingDialog';
 import Resizer from '../components/Resizer';
+import ThemeToggle from '../components/ThemeToggle';
 import { FileInfo } from '../types/types';
 import { generateDiagram, updateDiagramWithFiles, updateMermaidWithGemini } from '../utils/geminiApi';
 
@@ -41,6 +42,21 @@ const Home = () => {
   const [error, setError] = useState<string | null>(null);
   const [leftWidth, setLeftWidth] = useState<number>(50);
   const [clearTrigger, setClearTrigger] = useState<number>(0);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const isDark = document.documentElement.classList.contains('dark');
+    setIsDarkMode(isDark);
+  }, []);
+
+  useEffect(() => {
+    const handleThemeChange = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'));
+    };
+
+    window.addEventListener('themechange', handleThemeChange);
+    return () => window.removeEventListener('themechange', handleThemeChange);
+  }, []);
 
   const updateCode = useCallback((newCode: string) => {
     setMermaidCode(newCode);
@@ -107,19 +123,26 @@ const Home = () => {
     }
   }, [mermaidCode, updateCode]);
 
+  const handleThemeToggle = useCallback(() => {
+    const newIsDarkMode = !isDarkMode;
+    setIsDarkMode(newIsDarkMode);
+    document.documentElement.classList.toggle('dark', newIsDarkMode);
+    window.dispatchEvent(new Event('themechange'));
+  }, [isDarkMode]);
+
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className={`flex flex-col h-screen ${isDarkMode ? 'dark' : ''} bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100`}>
       <Head>
         <title>Mermaid Editor GenAI</title>
       </Head>
-      <Header />
+      <Header onThemeToggle={handleThemeToggle} />
       <main className="flex flex-1 overflow-hidden p-4">
         <ResizableContainer
           leftWidth={leftWidth}
           onResize={setLeftWidth}
           leftContent={
             <>
-              <div className="p-4 pb-0 border-b-4">
+              <div className="p-4 pb-0 border-b-4 border-gray-200 dark:border-gray-700">
                 <FileUpload onFilesSelected={handleFilesSelected} />
               </div>
               <div className="flex-1 overflow-auto p-4">
@@ -131,6 +154,9 @@ const Home = () => {
                   onClear={handleClear}
                 />
               </div>
+              <div className="p-4 border-t-4 border-gray-200 dark:border-gray-700">
+                <GeminiInput onSubmit={handleGeminiUpdate} clearTrigger={clearTrigger} />
+              </div>
             </>
           }
           rightContent={
@@ -138,19 +164,19 @@ const Home = () => {
           }
         />
       </main>
-      <footer className="bg-gray-200 p-4">
-        <GeminiInput onSubmit={handleGeminiUpdate} clearTrigger={clearTrigger} />
-      </footer>
       <LoadingDialog isOpen={isLoading} />
       <ErrorDialog isOpen={error !== null} message={error || ''} onClose={() => setError(null)} />
     </div>
   );
 };
 
-const Header = () => (
-  <header className="bg-blue-600 text-white p-4 flex items-center">
-    <img src="/favicon.svg" alt="App Icon" className="h-8 w-8 mr-2" />
-    <h1 className="text-2xl font-bold">Mermaid Editor GenAI</h1>
+const Header = ({ onThemeToggle }: { onThemeToggle: () => void }) => (
+  <header className="bg-blue-600 dark:bg-blue-800 text-white p-4 flex items-center justify-between">
+    <div className="flex items-center">
+      <img src="/favicon.svg" alt="App Icon" className="h-8 w-8 mr-2" />
+      <h1 className="text-2xl font-bold">Mermaid Editor GenAI</h1>
+    </div>
+    <ThemeToggle />
   </header>
 );
 
@@ -162,7 +188,7 @@ interface ResizableContainerProps {
 }
 
 const ResizableContainer: React.FC<ResizableContainerProps> = ({ leftWidth, onResize, leftContent, rightContent }) => (
-  <div id="resizable-container" className="flex-grow flex overflow-hidden bg-white rounded-lg shadow-lg">
+  <div id="resizable-container" className="flex-grow flex overflow-hidden bg-white dark:bg-gray-800 rounded-lg shadow-lg">
     <div style={{ width: `${leftWidth}%` }} className="flex flex-col min-w-[10%] max-w-[90%]">
       {leftContent}
     </div>
