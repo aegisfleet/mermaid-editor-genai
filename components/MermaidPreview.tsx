@@ -93,11 +93,11 @@ const MermaidPreview: React.FC<MermaidPreviewProps> = ({ code }) => {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="mb-2 flex justify-between">
-        <div>
+      <div className="mb-2 flex flex-wrap justify-between gap-2">
+        <div className="flex flex-wrap gap-2">
           <button 
             onClick={() => handleZoom(false)} 
-            className="mr-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg shadow-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg shadow-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
           >
             Zoom Out
           </button>
@@ -108,14 +108,12 @@ const MermaidPreview: React.FC<MermaidPreviewProps> = ({ code }) => {
             Zoom In
           </button>
         </div>
-        <div>
-          <button 
-            onClick={handleResetZoom} 
-            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg shadow-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-          >
-            Reset Zoom
-          </button>
-        </div>
+        <button 
+          onClick={handleResetZoom} 
+          className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg shadow-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+        >
+          Reset Zoom
+        </button>
       </div>
       <div
         ref={containerRef}

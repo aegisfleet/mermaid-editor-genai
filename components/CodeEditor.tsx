@@ -44,10 +44,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange, onUndo, onRedo,
 
   return (
     <div className="h-full flex flex-col">
-      <div className="mb-2 flex justify-between">
-        <div>
-          <button onClick={onUndo} className="mr-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg shadow-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Undo</button>
-          <button onClick={onRedo} className="mr-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg shadow-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Redo</button>
+      <div className="mb-2 flex flex-wrap justify-between gap-2">
+        <div className="flex flex-wrap gap-2">
+          <button onClick={onUndo} className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg shadow-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Undo</button>
+          <button onClick={onRedo} className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg shadow-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Redo</button>
           <button onClick={onClear} className="px-4 py-2 bg-red-500 dark:bg-red-700 text-white rounded-lg shadow-md hover:bg-red-600 dark:hover:bg-red-600 transition-colors">Clear</button>
         </div>
         <button 
