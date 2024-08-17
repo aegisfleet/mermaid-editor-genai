@@ -60,7 +60,9 @@ const updateMermaidWithGemini = async (currentCode: string, instruction: string)
 ${instruction}
 
 現在のMermaidコード:
+\`\`\`mermaid
 ${currentCode}
+\`\`\`
   `;
 
   try {
@@ -86,35 +88,28 @@ const generateDiagram = async (fileInfos: FileInfo[], diagramType: DiagramType, 
     flowchart: 'フローチャート'
   };
 
-  const fileStructure = fileInfos.map(file => `${file.path}: ${file.content ? '(content available)' : '(no content)'}`).join('\n');
-
   let specificationPrompt;
   if (userInstruction) {
-    specificationPrompt = `
-- ${userInstruction}の呼び出し元を解析し、ダイアグラムに反映させたい。
-- ${userInstruction}に関係の無い処理は記載しない。
-    `;
+    specificationPrompt = `- ${userInstruction}の呼び出し元を解析し、処理の呼び出し関係を詳細にダイアグラムに反映させたい。
+- 具体的な処理名を記載する。
+- ${userInstruction}に関係の無い処理は記載しない。`;
   } else {
-    specificationPrompt = `
-- この図はコンテンツの内容を深く理解するために作成され、簡素で分かりやすい表現を用いる。
-- 関連の無いファイルの記載は省略する。
-    `;
+    specificationPrompt = `-簡素で分かりやすい表現を用いる。
+- 関連の無いファイルの記載は省略する。`;
   }
 
   const prompt = `
-以下のファイル構造とコンテンツを解析し、${diagramTypeMap[diagramType]}を生成してください。
+以下のソースコードを解析し、${diagramTypeMap[diagramType]}を生成してください。
 
 仕様:
 - Mermaidの${diagramTypeMap[diagramType]}形式を使用する。
+- このダイアグラムは不具合の解析やコードの理解を深めるために作成される。
 ${specificationPrompt}
 - 図の中には補足を日本語で記載する。
 - なるべくUI上の機能名を記載する。
 - 生成されたMermaidコードのみを返す。
 
-ファイル構造:
-${fileStructure}
-
-ファイルコンテンツ:
+ソースコード:
 ${fileInfos.filter(file => file.content).map(file => `\`\`\`file:${file.path}\n${file.content}\n\`\`\``).join('\n\n')}
   `;
 
@@ -135,22 +130,20 @@ ${fileInfos.filter(file => file.content).map(file => `\`\`\`file:${file.path}\n$
 const updateDiagramWithFiles = async (currentCode: string, fileInfos: FileInfo[], userInstruction: string) => {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
-  const fileStructure = fileInfos.map(file => `${file.path}: ${file.content ? '(content available)' : '(no content)'}`).join('\n');
-
   const prompt = `
-以下のファイル構造とコンテンツを解析し、現在のMermaidコードを更新してください。
+以下のソースコードを解析し、現在のMermaidコードを更新してください。
 
 仕様:
-- 現在のMermaidコードを基に、新しい情報を統合して図を更新する。
+- ダイアグラムの形式は変更しない。
+- 現在のMermaidコードを基に、更新された部分を図に反映させる。
 - 更新されたMermaidコードのみを返す。
 
 現在のMermaidコード:
+\`\`\`mermaid
 ${currentCode}
+\`\`\`
 
-ファイル構造:
-${fileStructure}
-
-ファイルコンテンツ:
+ソースコード:
 ${fileInfos.filter(file => file.content).map(file => `\`\`\`file:${file.path}\n${file.content}\n\`\`\``).join('\n\n')}
   `;
 

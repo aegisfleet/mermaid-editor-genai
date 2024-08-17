@@ -133,6 +133,32 @@ sequenceDiagram
   deactivate Mermaid Editor GenAI
 ```
 
+### `updateMermaidWithGemini`に着目して作成したクラス図
+
+```mermaid
+classDiagram
+    class FileUpload {
+        + onFilesSelected(files: File[], diagramType: DiagramType, updateType: UpdateType, userInstruction: string): void
+    }
+    class GeminiInput {
+        + onSubmit(instruction: string): void
+    }
+    class Home {
+        + handleFilesSelected(): void
+        + handleGeminiUpdate(): void
+    }
+    class updateMermaidWithGemini {
+        + currentCode: string
+        + instruction: string
+    }
+    Home --> FileUpload : ファイルアップロードボタンクリック
+    Home --> GeminiInput : Gemini指示入力後送信
+    Home --> updateMermaidWithGemini : Mermaidコード更新処理呼び出し
+    FileUpload --> Home : 選択されたファイル情報を渡す
+    GeminiInput --> Home : Geminiへの指示内容を渡す
+    updateMermaidWithGemini --> Home : 更新後のMermaidコードを返す
+```
+
 ## ライセンス
 
 このプロジェクトはMITライセンスのもとで公開されています。詳細は`LICENSE`ファイルを参照してください。
