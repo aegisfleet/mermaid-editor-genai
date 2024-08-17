@@ -122,7 +122,7 @@ ${fileInfos.filter(file => file.content).map(file => `\`\`\`file:${file.path}\n$
 
     return diagram;
   } catch (error) {
-    console.error(`Error generating ${diagramType} diagram with Gemini:`, error);
+    console.error('Error generating %s diagram with Gemini:', diagramType, error);
     throw error;
   }
 };
