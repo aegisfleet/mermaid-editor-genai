@@ -46,7 +46,7 @@ interface FileInfo {
 }
 
 const updateMermaidWithGemini = async (currentCode: string, instruction: string) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-exp-0827" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-002" });
 
   const prompt = `
 以下の指示に基づいて、Mermaidコードを更新する。
@@ -80,7 +80,7 @@ ${currentCode}
 };
 
 const generateDiagram = async (fileInfos: FileInfo[], diagramType: DiagramType, userInstruction: string) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-exp-0827" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-002" });
 
   const diagramTypeMap = {
     sequence: 'シーケンス図',
@@ -128,7 +128,7 @@ ${fileInfos.filter(file => file.content).map(file => `\`\`\`file:${file.path}\n$
 };
 
 const updateDiagramWithFiles = async (currentCode: string, fileInfos: FileInfo[], userInstruction: string) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-exp-0827" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-002" });
 
   const prompt = `
 以下のソースコードを解析し、現在のMermaidコードを更新してください。
