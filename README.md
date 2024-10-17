@@ -2,6 +2,10 @@
 
 Mermaid Editor GenAIは、Mermaidダイアグラムを生成および編集するためのWebアプリケーションです。Google Generative AI（Gemini）を使用して、指示に基づいてMermaidコードを自動的に更新します。
 
+![light_theme](/images/capture_light_theme.png)
+
+![dark_theme](/images/capture_dark_theme.png)
+
 ## 機能
 
 - **コードエディタ**：Mermaidコードを直接編集できます。
