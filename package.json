@@ -13,7 +13,7 @@
     "@google/generative-ai": "^0.16.0",
     "@uiw/react-codemirror": "^4.23.0",
     "lucide-react": "^0.316.0",
-    "mermaid": "^10.9.3",
+    "mermaid": "^11.4.1",
     "next": "14.2.21",
     "react": "^18",
     "react-dom": "^18"
