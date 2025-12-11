@@ -1,26 +1,26 @@
-# Security Audit - CVE-2025-55182 (December 2025)
+# セキュリティ監査 - CVE-2025-55182 (2025年12月)
 
-**Vulnerability:** Remote Code Execution (RCE) in React Server Components (CVE-2025-55182 / GHSA-9qr9-h5gf-34mp).
-**Date of Audit:** December 10, 2025
+**脆弱性:** React Server Components におけるリモートコード実行 (RCE) (CVE-2025-55182 / GHSA-9qr9-h5gf-34mp)
+**監査日:** 2025年12月10日
 
-## Analysis
+## 分析
 
-The repository was checked for vulnerability CVE-2025-55182, which affects React Server Components in specific versions of Next.js and related `react-server-dom-*` packages.
+本リポジトリに対して、Next.js の特定のバージョンおよび関連する `react-server-dom-*` パッケージの React Server Components に影響を与える脆弱性 CVE-2025-55182 の調査を行いました。
 
-### Findings
+### 調査結果
 
-1.  **Next.js Version:** The project uses `next@14.2.32`.
-    *   **Status:** Safe. This stable version predates the vulnerable Next.js 15.x releases and the affected 14.3.0 canary builds.
-2.  **Dependencies:**
-    *   `react-server-dom-webpack`: Not present.
-    *   `react-server-dom-parcel`: Not present.
-    *   `react-server-dom-turbopack`: Not present.
-    *   **Status:** Safe. The vulnerable packages (versions 19.x) are not in the dependency tree.
-3.  **Architecture:**
-    *   The project uses the **Pages Router** (`pages/` directory).
-    *   The vulnerability primarily affects the **App Router** where React Server Components are enabled by default.
-    *   **Status:** Safe.
+1.  **Next.js のバージョン:** 本プロジェクトは `next@14.2.32` を使用しています。
+    *   **ステータス:** 安全。この安定版バージョンは、脆弱性のある Next.js 15.x リリースや影響を受ける 14.3.0 canary ビルドよりも前のものです。
+2.  **依存関係:**
+    *   `react-server-dom-webpack`: 存在しません。
+    *   `react-server-dom-parcel`: 存在しません。
+    *   `react-server-dom-turbopack`: 存在しません。
+    *   **ステータス:** 安全。脆弱性のあるパッケージ (バージョン 19.x) は依存関係ツリーに含まれていません。
+3.  **アーキテクチャ:**
+    *   本プロジェクトは **Pages Router** (`pages/` ディレクトリ) を使用しています。
+    *   この脆弱性は、主に React Server Components がデフォルトで有効になっている **App Router** に影響します。
+    *   **ステータス:** 安全。
 
-## Conclusion
+## 結論
 
-This repository is **NOT affected** by CVE-2025-55182. No action is required.
+本リポジトリは CVE-2025-55182 の**影響を受けません**。対策は不要です。
