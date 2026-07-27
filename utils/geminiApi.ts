@@ -17,6 +17,9 @@ async function callGeminiAPI<T>(action: GeminiAction, data: T): Promise<string> 
   });
 
   if (!response.ok) {
+    if (response.status === 504) {
+      throw new Error("API request timed out (504 Gateway Timeout). Please try again or simplify your instruction.");
+    }
     let errorMessage = `API request failed: ${response.statusText}`;
     try {
       const errorJson = await response.json();

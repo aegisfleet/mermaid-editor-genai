@@ -2,6 +2,10 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextApiRequest, NextApiResponse } from 'next';
 import { DiagramType } from "../../components/FileUpload";
 
+export const config = {
+  maxDuration: 60,
+};
+
 const getModelName = () => process.env.GEMINI_MODEL || "gemini-3-flash-preview";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
