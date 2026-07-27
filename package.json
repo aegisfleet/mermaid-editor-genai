@@ -15,12 +15,12 @@
     "lucide-react": "^1.27.0",
     "mermaid": "^11.16.0",
     "next": "16.2.12",
-    "react": "^18",
+    "react": "^19",
     "react-dom": "^18"
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "^18",
+    "@types/react": "^19",
     "@types/react-dom": "^18",
     "eslint": "^10",
     "eslint-config-next": "^16.2.12",
