@@ -90,9 +90,10 @@ const Home = () => {
       const updatedCode = await updateMermaidWithGemini(mermaidCode, instruction);
       updateCode(updatedCode);
       setClearTrigger(prev => prev + 1);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error updating code with Gemini:', error);
-      setError('Failed to update code with Gemini. Please try again.');
+      const msg = error instanceof Error ? error.message : 'Failed to update code with Gemini. Please try again.';
+      setError(msg);
     } finally {
       setIsLoading(false);
     }
@@ -115,9 +116,10 @@ const Home = () => {
         : await updateDiagramWithFiles(mermaidCode, fileInfos, userInstruction);
       
       updateCode(newCode);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error generating/updating diagram:', error);
-      setError(`Failed to ${updateType === 'new' ? 'generate' : 'update'} diagram. Please try again.`);
+      const msg = error instanceof Error ? error.message : `Failed to ${updateType === 'new' ? 'generate' : 'update'} diagram. Please try again.`;
+      setError(msg);
     } finally {
       setIsLoading(false);
     }

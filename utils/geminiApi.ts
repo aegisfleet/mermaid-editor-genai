@@ -17,7 +17,16 @@ async function callGeminiAPI<T>(action: GeminiAction, data: T): Promise<string> 
   });
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.statusText}`);
+    let errorMessage = `API request failed: ${response.statusText}`;
+    try {
+      const errorJson = await response.json();
+      if (errorJson && errorJson.message) {
+        errorMessage = errorJson.message;
+      }
+    } catch {
+      // ignore json parse error
+    }
+    throw new Error(errorMessage);
   }
 
   const result: GeminiApiResponse = await response.json();

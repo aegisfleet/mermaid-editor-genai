@@ -2,18 +2,19 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextApiRequest, NextApiResponse } from 'next';
 import { DiagramType } from "../../components/FileUpload";
 
-const API_KEY = process.env.GEMINI_API_KEY;
-
-if (!API_KEY) {
-  throw new Error("GEMINI_API_KEY is not set in environment variables");
-}
-
-const genAI = new GoogleGenerativeAI(API_KEY);
+const getModelName = () => process.env.GEMINI_MODEL || "gemini-3-flash-preview";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
+
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ message: "GEMINI_API_KEY is not set in environment variables" });
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
 
   const { action, data } = req.body;
 
@@ -21,21 +22,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let result;
     switch (action) {
       case 'updateMermaid':
-        result = await updateMermaidWithGemini(data.currentCode, data.instruction);
+        result = await updateMermaidWithGemini(genAI, data.currentCode, data.instruction);
         break;
       case 'generateDiagram':
-        result = await generateDiagram(data.fileInfos, data.diagramType, data.userInstruction);
+        result = await generateDiagram(genAI, data.fileInfos, data.diagramType, data.userInstruction);
         break;
       case 'updateDiagram':
-        result = await updateDiagramWithFiles(data.currentCode, data.fileInfos, data.userInstruction);
+        result = await updateDiagramWithFiles(genAI, data.currentCode, data.fileInfos, data.userInstruction);
         break;
       default:
         return res.status(400).json({ message: 'Invalid action' });
     }
     res.status(200).json({ result });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in Gemini API:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error';
+    res.status(500).json({ message: errorMessage });
   }
 }
 
@@ -45,8 +47,8 @@ interface FileInfo {
   content: string | null;
 }
 
-const updateMermaidWithGemini = async (currentCode: string, instruction: string) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
+const updateMermaidWithGemini = async (genAI: GoogleGenerativeAI, currentCode: string, instruction: string) => {
+  const model = genAI.getGenerativeModel({ model: getModelName() });
 
   const prompt = `
 以下の指示に基づいて、Mermaidコードを更新する。
@@ -79,8 +81,8 @@ ${currentCode}
   }
 };
 
-const generateDiagram = async (fileInfos: FileInfo[], diagramType: DiagramType, userInstruction: string) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
+const generateDiagram = async (genAI: GoogleGenerativeAI, fileInfos: FileInfo[], diagramType: DiagramType, userInstruction: string) => {
+  const model = genAI.getGenerativeModel({ model: getModelName() });
 
   const diagramTypeMap = {
     sequence: 'シーケンス図',
@@ -127,8 +129,8 @@ ${fileInfos.filter(file => file.content).map(file => `\`\`\`file:${file.path}\n$
   }
 };
 
-const updateDiagramWithFiles = async (currentCode: string, fileInfos: FileInfo[], userInstruction: string) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
+const updateDiagramWithFiles = async (genAI: GoogleGenerativeAI, currentCode: string, fileInfos: FileInfo[], userInstruction: string) => {
+  const model = genAI.getGenerativeModel({ model: getModelName() });
 
   const prompt = `
 以下のソースコードを解析し、現在のMermaidコードを更新してください。
