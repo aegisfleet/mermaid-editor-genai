@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@codemirror/lang-markdown": "^6.5.1",
+    "@codemirror/lang-markdown": "^6.5.2",
     "@google/generative-ai": "^0.24.1",
     "@uiw/react-codemirror": "^4.25.11",
     "lucide-react": "^1.27.0",
